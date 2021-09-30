@@ -23,7 +23,7 @@ _Simple meme image generator created for Udacity Nanaodegree program_.
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![Meme Generator in action](./docs/_static/screencast-demo.gif)
+![Meme Generator in action](.sphinxdocs/_static/screencast-demo.gif)
 
 A simple meme generator written in python. This project was created as part of Udacity's Python Nanaodgree 
 program nd303. Includes a Flask based web interface and a cli interface. The cli interface will save the 

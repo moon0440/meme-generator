@@ -143,3 +143,4 @@ cython_debug/
 
 
 /static/
+/.sphinxdocs/_build/
