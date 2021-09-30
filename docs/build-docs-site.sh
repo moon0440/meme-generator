@@ -2,7 +2,7 @@
 set -ex
 
 apt-get update
-apt-get -y install git
+apt-get -y install git python3.9-minimal python3.9-venv
 
 
 pwd ls -lah
@@ -33,9 +33,11 @@ git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 git checkout -b gh-pages
+
 python3 -m venv .venv
 source venv/bin/activate
 pip install -r requirements.txt
+
 cd docs
 make clean
 make html
