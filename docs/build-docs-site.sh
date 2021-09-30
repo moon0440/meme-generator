@@ -1,8 +1,8 @@
 #!/bin/bash
 set -ex
 
-apt-get update
-apt-get -y install git python3.9-minimal python3.9-venv
+sudo apt-get update
+sudo apt-get -y install git python3.9-minimal python3.9-venv
 
 
 pwd ls -lah
