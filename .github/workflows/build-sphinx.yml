@@ -1,38 +1,12 @@
-
-name: build-sphinx-to-gh-pages
-
-env:
-  GITHUB_ACTOR: moon0440
-  GITHUB_REPOSITORY: moon0440/meme-generator
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-on:
-  push:
-    branches: [ master ]
-
+name: "Pull Request Docs Check"
+on: 
+- pull_request
 
 jobs:
-
-  build_sphinx_job:
-    runs-on: ubuntu-20.04
-
+  docs:
+    runs-on: ubuntu-latest
     steps:
-
-      - name: Get prerequisites and clone repository
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -x
-          sudo apt-get update
-          sudo apt-get install -y git python3.9-minimal python3.9-venv
-          git clone "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
-          python3 -m venv .venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-        shell: bash
-
-      - name: Run build script for Sphinx pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: "docs/build-docs-site.sh"
-        shell: bash
+    - uses: actions/checkout@v1
+    - uses: ammaraskar/sphinx-action@master
+      with:
+        docs-folder: "docs/"
