@@ -23,9 +23,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -x
-          apt-get update
-          apt-get install -y git
+          sudo apt-get update
+          sudo apt-get install -y git python3.9-minimal python3.9-venv
           git clone "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .
+          python3 -m venv .venv
+          source venv/bin/activate
+          pip install -r requirements.txt
         shell: bash
 
       - name: Run build script for Sphinx pages

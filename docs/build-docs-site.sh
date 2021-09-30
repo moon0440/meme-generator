@@ -24,11 +24,10 @@ export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-#docroot=`mktemp -d`
-#mkdir -p "_build/html/"
-#rsync -av "_build/html/" "${docroot}/"
-#
-#pushd "${docroot}"
+docroot=`mktemp -d`
+rsync -av "_build/html/" "${docroot}/"
+
+pushd "${docroot}"
 
 git init
 git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
