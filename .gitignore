@@ -141,5 +141,5 @@ cython_debug/
 # PyCharm Settings
 .idea
 
-# Sphinx builds
+
 /static/
