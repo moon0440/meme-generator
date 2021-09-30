@@ -142,5 +142,4 @@ cython_debug/
 .idea
 
 # Sphinx builds
-docs/_build
 /static/
