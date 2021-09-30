@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+set -ex
 
 apt-get update
 apt-get -y install git rsync python3-sphinx
