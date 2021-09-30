@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quoteengine package &mdash; Meme Generator 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="memeengine package" href="memeengine.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Meme Generator
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">meme-generator</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memeengine.html">memeengine package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">quoteengine package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-quoteengine.ingestors">quoteengine.ingestors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-quoteengine.quote_models">quoteengine.quote_models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-quoteengine">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Meme Generator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">meme-generator</a> &raquo;</li>
+      <li>quoteengine package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/quoteengine.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quoteengine-package">
+<h1>quoteengine package<a class="headerlink" href="#quoteengine-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-quoteengine.ingestors">
+<span id="quoteengine-ingestors-module"></span><h2>quoteengine.ingestors module<a class="headerlink" href="#module-quoteengine.ingestors" title="Permalink to this headline"></a></h2>
+<p>Classes used to read quotes from various file types.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.ingestors.CsvIngestor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.ingestors.</span></span><span class="sig-name descname"><span class="pre">CsvIngestor</span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#CsvIngestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.CsvIngestor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quoteengine.ingestors.IngestorInterface" title="quoteengine.ingestors.IngestorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">quoteengine.ingestors.IngestorInterface</span></code></a></p>
+<p>Imports quotes from csv files using pandas read_csv.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quoteengine.ingestors.CsvIngestor.allowed_extensions">
+<span class="sig-name descname"><span class="pre">allowed_extensions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['csv']</span></em><a class="headerlink" href="#quoteengine.ingestors.CsvIngestor.allowed_extensions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.CsvIngestor.parse">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quoteengine.quote_models.QuoteModel" title="quoteengine.quote_models.QuoteModel"><span class="pre">quoteengine.quote_models.QuoteModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#CsvIngestor.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.CsvIngestor.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of <cite>QuoteModel</cite> from parsing a csv file with pandas.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.ingestors.DocxIngestor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.ingestors.</span></span><span class="sig-name descname"><span class="pre">DocxIngestor</span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#DocxIngestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.DocxIngestor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quoteengine.ingestors.IngestorInterface" title="quoteengine.ingestors.IngestorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">quoteengine.ingestors.IngestorInterface</span></code></a></p>
+<p>Imports quotes from docx files.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quoteengine.ingestors.DocxIngestor.allowed_extensions">
+<span class="sig-name descname"><span class="pre">allowed_extensions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['docx']</span></em><a class="headerlink" href="#quoteengine.ingestors.DocxIngestor.allowed_extensions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.DocxIngestor.parse">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quoteengine.quote_models.QuoteModel" title="quoteengine.quote_models.QuoteModel"><span class="pre">quoteengine.quote_models.QuoteModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#DocxIngestor.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.DocxIngestor.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of <cite>QuoteModel</cite> from parsing docx file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.ingestors.Ingestor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.ingestors.</span></span><span class="sig-name descname"><span class="pre">Ingestor</span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#Ingestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.Ingestor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quoteengine.ingestors.IngestorInterface" title="quoteengine.ingestors.IngestorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">quoteengine.ingestors.IngestorInterface</span></code></a></p>
+<p>Encapsulates helper ingestor classes to a unified interface for all supported file types.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.Ingestor.can_ingest">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">can_ingest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#Ingestor.can_ingest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.Ingestor.can_ingest" title="Permalink to this definition"></a></dt>
+<dd><p>Return a bool if the parent class has support for file extension in a given path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.Ingestor.parse">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quoteengine.quote_models.QuoteModel" title="quoteengine.quote_models.QuoteModel"><span class="pre">quoteengine.quote_models.QuoteModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#Ingestor.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.Ingestor.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of <cite>QuoteModel</cite> from parsing any supported file type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.ingestors.</span></span><span class="sig-name descname"><span class="pre">IngestorInterface</span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#IngestorInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Abstract base class for parsing quotes stored in varying file formats.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface.allowed_extensions">
+<span class="sig-name descname"><span class="pre">allowed_extensions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">[]</span></em><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface.allowed_extensions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface.can_ingest">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">can_ingest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#IngestorInterface.can_ingest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface.can_ingest" title="Permalink to this definition"></a></dt>
+<dd><p>Return boolean if the passed path has an extension in allowed_extensions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface.clean_text">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#IngestorInterface.clean_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface.clean_text" title="Permalink to this definition"></a></dt>
+<dd><p>Return text free of unwanted and non-printable characters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface.ext_from_path">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">ext_from_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#IngestorInterface.ext_from_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface.ext_from_path" title="Permalink to this definition"></a></dt>
+<dd><p>Return a file extension from path string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface.extension_support">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">extension_support</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#IngestorInterface.extension_support"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface.extension_support" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of all supported parse extension formats from subclasses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.IngestorInterface.parse">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quoteengine.quote_models.QuoteModel" title="quoteengine.quote_models.QuoteModel"><span class="pre">quoteengine.quote_models.QuoteModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#IngestorInterface.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.IngestorInterface.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return <cite>QuoteModels</cite> for each quote found in a parsed file.</p>
+<p>This is the main override for subclass implementations.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.ingestors.PdfIngestor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.ingestors.</span></span><span class="sig-name descname"><span class="pre">PdfIngestor</span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#PdfIngestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.PdfIngestor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quoteengine.ingestors.IngestorInterface" title="quoteengine.ingestors.IngestorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">quoteengine.ingestors.IngestorInterface</span></code></a></p>
+<p>Imports quotes from pdf files using subprocess to launch pdftotext.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quoteengine.ingestors.PdfIngestor.allowed_extensions">
+<span class="sig-name descname"><span class="pre">allowed_extensions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['pdf']</span></em><a class="headerlink" href="#quoteengine.ingestors.PdfIngestor.allowed_extensions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.PdfIngestor.parse">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quoteengine.quote_models.QuoteModel" title="quoteengine.quote_models.QuoteModel"><span class="pre">quoteengine.quote_models.QuoteModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#PdfIngestor.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.PdfIngestor.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of <cite>QuoteModel</cite> from parsing pdf file with pdftotext binary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.ingestors.TxtIngestor">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.ingestors.</span></span><span class="sig-name descname"><span class="pre">TxtIngestor</span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#TxtIngestor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.TxtIngestor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#quoteengine.ingestors.IngestorInterface" title="quoteengine.ingestors.IngestorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">quoteengine.ingestors.IngestorInterface</span></code></a></p>
+<p>Imports quotes from raw text(txt) files.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="quoteengine.ingestors.TxtIngestor.allowed_extensions">
+<span class="sig-name descname"><span class="pre">allowed_extensions</span></span><em class="property"> <span class="pre">=</span> <span class="pre">['txt']</span></em><a class="headerlink" href="#quoteengine.ingestors.TxtIngestor.allowed_extensions" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quoteengine.ingestors.TxtIngestor.parse">
+<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#quoteengine.quote_models.QuoteModel" title="quoteengine.quote_models.QuoteModel"><span class="pre">quoteengine.quote_models.QuoteModel</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/quoteengine/ingestors.html#TxtIngestor.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.ingestors.TxtIngestor.parse" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of <cite>QuoteModel</cite> from parsing a txt file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-quoteengine.quote_models">
+<span id="quoteengine-quote-models-module"></span><h2>quoteengine.quote_models module<a class="headerlink" href="#module-quoteengine.quote_models" title="Permalink to this headline"></a></h2>
+<p>Classes for varying quote data models. Currently only 1 is needed.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="quoteengine.quote_models.QuoteModel">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">quoteengine.quote_models.</span></span><span class="sig-name descname"><span class="pre">QuoteModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">body</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/quoteengine/quote_models.html#QuoteModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quoteengine.quote_models.QuoteModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to encapsulate “body” and “author” for a parsed quote.</p>
+</dd></dl>
+
+</section>
+<section id="module-quoteengine">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-quoteengine" title="Permalink to this headline"></a></h2>
+<p><cite>quoteengine</cite> module responsible for ingesting many types of files that contain quotes.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="memeengine.html" class="btn btn-neutral float-left" title="memeengine package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Blake Moon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quoteengine.ingestors &mdash; Meme Generator 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Meme Generator
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../source/modules.html">meme-generator</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Meme Generator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>quoteengine.ingestors</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for quoteengine.ingestors</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Classes used to read quotes from various file types.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">docx</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">quoteengine</span> <span class="kn">import</span> <span class="n">QuoteModel</span>
+
+
+<div class="viewcode-block" id="IngestorInterface"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.IngestorInterface">[docs]</a><span class="k">class</span> <span class="nc">IngestorInterface</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract base class for parsing quotes stored in varying file formats.&quot;&quot;&quot;</span>
+
+    <span class="n">allowed_extensions</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="IngestorInterface.can_ingest"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.IngestorInterface.can_ingest">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">can_ingest</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return boolean if the passed path has an extension in allowed_extensions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ext_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">allowed_extensions</span></div>
+
+<div class="viewcode-block" id="IngestorInterface.parse"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.IngestorInterface.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QuoteModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return `QuoteModels` for each quote found in a parsed file.</span>
+
+<span class="sd">        This is the main override for subclass implementations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="IngestorInterface.ext_from_path"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.IngestorInterface.ext_from_path">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">ext_from_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a file extension from path string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="IngestorInterface.extension_support"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.IngestorInterface.extension_support">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">extension_support</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of all supported parse extension formats from subclasses.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">allowed_extensions</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()]))</span></div>
+
+<div class="viewcode-block" id="IngestorInterface.clean_text"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.IngestorInterface.clean_text">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">clean_text</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return text free of unwanted and non-printable characters.&quot;&quot;&quot;</span>
+        <span class="n">remove_chars</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;[()</span><span class="se">\&quot;</span><span class="s2">#/@;&lt;&gt;</span><span class="si">{}</span><span class="s2">`+=~|.!?,]&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">isprintable</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">remove_chars</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()))</span></div></div>
+
+
+<div class="viewcode-block" id="DocxIngestor"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.DocxIngestor">[docs]</a><span class="k">class</span> <span class="nc">DocxIngestor</span><span class="p">(</span><span class="n">IngestorInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports quotes from docx files.&quot;&quot;&quot;</span>
+
+    <span class="n">allowed_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;docx&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DocxIngestor.parse"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.DocxIngestor.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QuoteModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of `QuoteModel` from parsing docx file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">can_ingest</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File Type not supported for </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">docx</span><span class="o">.</span><span class="n">Document</span><span class="p">(</span><span class="n">docx</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">QuoteModel</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">clean_text</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+                           <span class="n">author</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">clean_text</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                           <span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">paragraphs</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">text</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="PdfIngestor"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.PdfIngestor">[docs]</a><span class="k">class</span> <span class="nc">PdfIngestor</span><span class="p">(</span><span class="n">IngestorInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports quotes from pdf files using subprocess to launch pdftotext.&quot;&quot;&quot;</span>
+
+    <span class="n">allowed_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pdf&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="PdfIngestor.parse"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.PdfIngestor.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QuoteModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of `QuoteModel` from parsing pdf file with pdftotext binary.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">can_ingest</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File Type not supported for </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.txt&quot;</span><span class="p">)</span>
+        <span class="n">sub_p</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">&#39;pdftotext&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sub_p</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Subprocess &#39;pdftotext&#39; did not return successfully.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">TxtIngestor</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CsvIngestor"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.CsvIngestor">[docs]</a><span class="k">class</span> <span class="nc">CsvIngestor</span><span class="p">(</span><span class="n">IngestorInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports quotes from csv files using pandas read_csv.&quot;&quot;&quot;</span>
+
+    <span class="n">allowed_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="CsvIngestor.parse"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.CsvIngestor.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QuoteModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of `QuoteModel` from parsing a csv file with pandas.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">can_ingest</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File Type not supported for </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">QuoteModel</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">author</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="TxtIngestor"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.TxtIngestor">[docs]</a><span class="k">class</span> <span class="nc">TxtIngestor</span><span class="p">(</span><span class="n">IngestorInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imports quotes from raw text(txt) files.&quot;&quot;&quot;</span>
+
+    <span class="n">allowed_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;txt&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TxtIngestor.parse"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.TxtIngestor.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QuoteModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of `QuoteModel` from parsing a txt file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">can_ingest</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File Type not supported for </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">QuoteModel</span><span class="p">(</span><span class="n">body</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">clean_text</span><span class="p">(</span><span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+                           <span class="n">author</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">clean_text</span><span class="p">(</span><span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span> <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">clean_text</span><span class="p">(</span><span class="n">ln</span><span class="p">)]</span></div></div>
+
+
+<div class="viewcode-block" id="Ingestor"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.Ingestor">[docs]</a><span class="k">class</span> <span class="nc">Ingestor</span><span class="p">(</span><span class="n">IngestorInterface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Encapsulates helper ingestor classes to a unified interface for all supported file types.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Ingestor.can_ingest"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.Ingestor.can_ingest">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">can_ingest</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a bool if the parent class has support for file extension in a given path.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ext_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__base__</span><span class="o">.</span><span class="n">extension_support</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Ingestor.parse"><a class="viewcode-back" href="../../source/quoteengine.html#quoteengine.ingestors.Ingestor.parse">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QuoteModel</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of `QuoteModel` from parsing any supported file type.&quot;&quot;&quot;</span>
+        <span class="n">ext</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ext_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__base__</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">can_ingest</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unsupported file extension &quot;</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s1">&quot; from </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">. &#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39;Supported types are -&gt; </span><span class="si">{</span><span class="n">base</span><span class="o">.</span><span class="n">extension_support</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">parser</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()</span> <span class="k">if</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">allowed_extensions</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Blake Moon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

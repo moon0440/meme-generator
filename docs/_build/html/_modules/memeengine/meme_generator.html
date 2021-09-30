@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>memeengine.meme_generator &mdash; Meme Generator 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Meme Generator
+          </a>
+              <div class="version">
+                1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Meme Generator</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>memeengine.meme_generator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for memeengine.meme_generator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Meme generators overlay text(body, author from `quoteengine`  image files.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span><span class="p">,</span> <span class="n">ImageDraw</span><span class="p">,</span> <span class="n">ImageOps</span>
+<span class="kn">from</span> <span class="nn">PIL.ImageFont</span> <span class="kn">import</span> <span class="n">FreeTypeFont</span>
+
+
+<div class="viewcode-block" id="MemeGenerator"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator">[docs]</a><span class="k">class</span> <span class="nc">MemeGenerator</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;MemeGenerator generates a meme from an image and text.</span>
+
+<span class="sd">    Geenrates a meme from either (1) initialized arguments or (2) by setting output_dir only during construction then</span>
+<span class="sd">    calling make_make to get back a path of the processed meme image.</span>
+
+<span class="sd">    However all methods are checked and will raise a value error if not set/supplied required attributes are</span>
+<span class="sd">    missing. All have defaults except quote_body and quote_author.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./output&#39;</span><span class="p">,</span>
+                 <span class="n">input_image_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">quote_body</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">quote_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">output_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">text_width_percent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+                 <span class="n">font_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;memeengine/fonts/Montserrat-SemiBold.ttf&#39;</span><span class="p">,</span>
+                 <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creation of a Meme Image.</span>
+
+<span class="sd">        All params have defaults so they can be applied(or not) and any desired fashion.</span>
+
+<span class="sd">        :param output_path: Destination directory for saving</span>
+<span class="sd">        :param input_image_path: Path and filename for image load</span>
+<span class="sd">        :param quote_body: Quote body text</span>
+<span class="sd">        :param quote_author: Quote Author text</span>
+<span class="sd">        :param output_width: Desired image output width</span>
+<span class="sd">        :param text_width_percent: Percentage of image with for text to use</span>
+<span class="sd">        :param font_path: Path to font file that will be used to generate text</span>
+<span class="sd">        :param font_size: Set font size, overridden when using the `scale_text=True` param in overlay_text method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quote_body</span> <span class="o">=</span> <span class="n">quote_body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quote_author</span> <span class="o">=</span> <span class="n">quote_author</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_width</span> <span class="o">=</span> <span class="n">output_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_width_percent</span> <span class="o">=</span> <span class="n">text_width_percent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_path</span> <span class="o">=</span> <span class="n">font_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="n">font_size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_body</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_author</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_image_path</span> <span class="o">=</span> <span class="n">input_image_path</span>
+        <span class="c1"># Load image now if supplied to constructor</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_image_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_image_path</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">quote_author</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return quote author in the format of choice for rendering.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;- </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_quote_author</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="nd">@quote_author</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">quote_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quote_author</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="MemeGenerator.load_image"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.load_image">[docs]</a>    <span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span><span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return None after loading an image from path into class attribute.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.overlay_text"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.overlay_text">[docs]</a>    <span class="k">def</span> <span class="nf">overlay_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scale_text</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">random_text_position</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Overlays text on loaded image.</span>
+
+<span class="sd">        Applies optional args then applies previously loaded quote_body and quote_author to an previously loaded</span>
+<span class="sd">        image. To access the processed image use the `image` class attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">position</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">random_text_position</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;One of position, random_text_position must be provided&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">position</span> <span class="ow">and</span> <span class="n">random_text_position</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only one of position, random_text_position can be provided&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">output_width</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crop_image</span><span class="p">(</span><span class="n">output_width</span><span class="o">=</span><span class="n">output_width</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">scale_text</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_fonts_image_scale</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">random_text_position</span><span class="p">:</span>
+            <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_image_position</span><span class="p">()</span>
+
+        <span class="n">d1</span> <span class="o">=</span> <span class="n">ImageDraw</span><span class="o">.</span><span class="n">Draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+        <span class="n">d1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_body</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">font_body</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+        <span class="n">d1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">quote_author</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">font_author</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.save_image"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.save_image">[docs]</a>    <span class="k">def</span> <span class="nf">save_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return path of saved image file.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">full_output_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="nb">dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;meme-generator-&#39;</span><span class="p">,</span>
+                                                       <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">full_output_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">full_output_path</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.crop_image"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.crop_image">[docs]</a>    <span class="k">def</span> <span class="nf">crop_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return an image crop cropped to single_dim keeping aspect ratio.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">output_width</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_width</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;output_width must be supplied or set on instance before calling fit_image&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">output_width</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_width</span> <span class="o">!=</span> <span class="n">output_width</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_width</span> <span class="o">=</span> <span class="n">output_width</span>
+
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">output_width</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">scale</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">ImageOps</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.set_font_size"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.set_font_size">[docs]</a>    <span class="k">def</span> <span class="nf">set_font_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">author_decrease_pct</span><span class="o">=</span><span class="mf">0.20</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a font for author based on class attributes.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="mf">0.1</span> <span class="o">&gt;</span> <span class="n">author_decrease_pct</span> <span class="o">&gt;</span> <span class="mf">.9</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;author_decrease_pct must be a percent in range from 0.10 - 0.90&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_body</span> <span class="o">=</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_path</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_author</span> <span class="o">=</span> <span class="n">FreeTypeFont</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_path</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">size</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+-</span><span class="n">author_decrease_pct</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.set_fonts_image_scale"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.set_fonts_image_scale">[docs]</a>    <span class="k">def</span> <span class="nf">set_fonts_image_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text_width_pct</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return two fonts for body and author text scaled to percentage of width.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">text_width_pct</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_width_percent</span> <span class="o">!=</span> <span class="n">text_width_pct</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text_width_percent</span> <span class="o">=</span> <span class="n">text_width_pct</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_body</span><span class="o">.</span><span class="n">getlength</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quote_body</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_width_percent</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_font_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_body</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.random_image_position"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.random_image_position">[docs]</a>    <span class="k">def</span> <span class="nf">random_image_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return random position for text placement.&quot;&quot;&quot;</span>
+        <span class="n">box_padding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_body</span><span class="o">.</span><span class="n">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quote_body</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)[:</span><span class="mi">2</span><span class="p">],</span>
+                                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_author</span><span class="o">.</span><span class="n">getbbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">quote_author</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]))</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">size</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">+</span> <span class="n">box_padding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_integers</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_integers</span><span class="p">(</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MemeGenerator.make_meme"><a class="viewcode-back" href="../../source/memeengine.html#memeengine.meme_generator.MemeGenerator.make_meme">[docs]</a>    <span class="k">def</span> <span class="nf">make_meme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quote_body</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">quote_author</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Override previously supplied params and saves image.</span>
+
+<span class="sd">        Created for a specific use case:</span>
+<span class="sd">            meme = MemeGenerator(&#39;./tmp&#39;)</span>
+<span class="sd">            path = meme.make_meme(img, quote.body, quote.author)</span>
+
+<span class="sd">        :param img_path: Loads image from path, overriding and previously stored image</span>
+<span class="sd">        :param quote_body: Loads quote_body from supplied text, overriding quote_body a previously set quote_body</span>
+<span class="sd">        :param quote_author: Same as quote_body but for quote_author</span>
+<span class="sd">        :param width: Scaled image keeping</span>
+<span class="sd">        :return: location of saved file as a str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quote_body</span> <span class="o">=</span> <span class="n">quote_body</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">quote_author</span> <span class="o">=</span> <span class="n">quote_author</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">overlay_text</span><span class="p">(</span><span class="n">output_width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">scale_text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_image</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Blake Moon.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
