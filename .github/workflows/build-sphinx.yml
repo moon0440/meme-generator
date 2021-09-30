@@ -4,7 +4,7 @@ name: build-sphinx-to-gh-pages
 env:
   GITHUB_ACTOR: moon0440
   GITHUB_REPOSITORY: moon0440/meme-generator
-  GITHUB_TOKEN: ${{ secrets.CREATE_DEMO_SECRET }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
 
       - name: Get prerequisites and clone repository
         env:
-          GITHUB_TOKEN: ${{ secrets.CREATE_DEMO_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -x
           apt-get update
@@ -31,6 +31,6 @@ jobs:
 
       - name: Run build script for Sphinx pages
         env:
-          GITHUB_TOKEN: ${{ secrets.CREATE_DEMO_SECRET }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: "docs/build-docs-site.sh"
         shell: bash
