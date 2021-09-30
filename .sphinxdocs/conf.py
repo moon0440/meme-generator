@@ -92,6 +92,7 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
+# Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
 # The default sidebars (for documents that don't match any pattern) are
