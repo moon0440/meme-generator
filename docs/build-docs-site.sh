@@ -34,7 +34,7 @@ git remote add deploy "https://token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSIT
 git checkout -b gh-pages
 
 python3 -m venv .venv
-source venv/bin/activate
+source .venv/bin/activate
 pip install -r requirements.txt
 
 cd docs
