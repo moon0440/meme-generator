@@ -1,7 +1,7 @@
 """Classes used to read quotes from various file types."""
 import subprocess
 import tempfile
-from abc import ABC
+import abc
 from itertools import chain
 from typing import List
 import re
@@ -12,7 +12,7 @@ import pandas as pd
 from quoteengine import QuoteModel
 
 
-class IngestorInterface(ABC):
+class IngestorInterface(metaclass=abc.ABCMeta):
     """Abstract base class for parsing quotes stored in varying file formats."""
 
     allowed_extensions = []
@@ -23,6 +23,7 @@ class IngestorInterface(ABC):
         return cls.ext_from_path(path) in cls.allowed_extensions
 
     @classmethod
+    @abc.abstractmethod
     def parse(cls, path: str) -> List[QuoteModel]:
         """Return `QuoteModels` for each quote found in a parsed file.
 
