@@ -113,7 +113,7 @@ class MemeGenerator:
 
         scale = output_width/self.image.width
         w,h = self.image.size[0]*scale,self.image.size[0]*scale
-        self.image = ImageOps.fit(self.image, (w,h))
+        self.image = ImageOps.fit(self.image, (int(w),int(h)))
 
     def set_font_size(self, size: int, author_decrease_pct=0.20) -> None:
         """Return a font for author based on class attributes."""
